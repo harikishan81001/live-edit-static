@@ -4,15 +4,20 @@
 {% block extrastyle %}{{ block.super }}
 <link rel="stylesheet" type="text/css" href="{% load adminmedia %}{% admin_media_prefix %}css/dashboard.css" />
 <link rel="stylesheet" type="text/css" href="{% load adminmedia %}{% admin_media_prefix %}css/forms.css" />
-<!--<link rel="stylesheet" type="text/css" href="../media/css/codemirror.css" />-->
+<link rel="stylesheet" type="text/css" href="../media/css/codemirror.css" />
 {% endblock %}
 {% block extrahead %}
 <script type="text/javascript" src="../media/scripts/jquery-1.8.2.min.js"></script>
-<!--<script type="text/javascript" src="../media/scripts/codemirror.js"></script>-->
-<!--<script src="../media/scripts/modes/javascript.js"></script>-->
-<!--<script src="../media/scripts/modes/css.js"></script>-->
-<!--<script src="../media/scripts/modes/htmlembedded.js"></script>-->
+<script type="text/javascript" src="../media/scripts/codemirror.js"></script>
+<script src="../media/scripts/modes/javascript.js"></script>
+<script src="../media/scripts/modes/css.js"></script>
+<script src="../media/scripts/modes/htmlembedded.js"></script>
 <script type="text/javascript">
+    $(document).ready(function(){
+        myCodeMirror = CodeMirror(function(elt) {
+            $('#id_file_content')[0].parentNode.replaceChild(elt, $('#id_file_content')[0]);
+        }, {value: $('#id_file_content')[0].value});
+    });
     function _load(file_id){
         var _path = $('#'+file_id).val();
         if(!_path==''){
@@ -23,11 +28,8 @@
                 }
                 else{
                     $('#error_msg').css("display", "none");
-                    $('#id_file_content').attr('value',data.split('DT-CONTENT')[0]);
                     $('#id_token').attr('value',data.split('DT-CONTENT')[1]);
-//                    var myCodeMirror = CodeMirror(function(elt) {
-//                        $('#id_file_content')[0].parentNode.replaceChild(elt, $('#id_file_content')[0]);
-//                    }, {value: $('#id_file_content')[0].value});
+                    myCodeMirror.setValue(data.split('DT-CONTENT')[0]);
                 }
             });
         }
@@ -36,7 +38,7 @@
         }
     }
     function _save(){
-        var _val = $('#id_file_content').val();
+        var _val = myCodeMirror.getValue();
         var _path = $('#id_name').val();
         if(!_path==''&&!_val==''){
         $.post('/file-content/',{'_content':_val,'csrfmiddlewaretoken':$('[name="csrfmiddlewaretoken"]').val(),'_path':_path,'_token':$('#id_token').val()},function(data){
@@ -50,7 +52,9 @@
             }
             else{
                 $('#error_msg').css("display", "none");
-                $('#id_file_content').attr('value',data);
+                alert('File modified successfully !!');
+                myCodeMirror.setValue(data);
+
             }
         });
         }
