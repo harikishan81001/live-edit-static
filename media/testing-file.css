@@ -1,0 +1,64 @@
+body {
+    background: black;
+    color: #80c0c9 }
+       a:link { color: #ff8080 }
+       a:visited { color: #ff0000 }
+       a:inactive { color: #a05050 }
+       a.case1:link { background: green }
+       p:first-line { margin-left: 34px }
+       div.foo:first-line {
+                           font-weight: bold;
+                           margin-left: 32px }
+       div:first-letter {
+                           font-size: x-large;
+                           color: #ffffff }
+       ul ul li {
+                           font-size: x-large;
+                           font-decoration: italic }
+       h2 em { font-weight: 800 }
+       h2.ex1 {
+                           color: green;       /* This type of heading MUST be Green and Large! */
+                           line-height: 50px;
+                           font-size: 45px }
+       .funkyclass {
+                           font: 36pt/40pt courier;
+                           font-variant: small-caps;
+                           border: thick dashed blue }
+       #tagid1 {
+                           padding: 20px;
+                           border: 20px groove #000000 }
+       .class1, #tagid2 { font-family: 'comic sans ms', fantasy; color: rgb(100%,100%,0%) }
+       h1, h2, div.class5, blockquote { background: #000080 }
+       p.special {
+                           font: 12pt/latto-sansarif;
+                           margin: 5px 0px 2px 25px;
+                           border: medium dashed #ff0000;
+                           background: white url(http://www.foo.com/image.gif) repeat-x fixed top right }
+       blockquote {
+                           margin-left: 2cm;
+                           color: #00ff00 }
+       .part3 {
+                           font-size: xx-large;
+                           color: #808000 }
+       h2 {
+                           font-size: xx-small ! important;
+                           color: red ! important } 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

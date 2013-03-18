@@ -1,0 +1,104 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+{% block title %}{{ title }} | {% trans 'Content Control Management' %}{% endblock %}
+{% block extrastyle %}{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% load adminmedia %}{% admin_media_prefix %}css/dashboard.css" />
+<link rel="stylesheet" type="text/css" href="{% load adminmedia %}{% admin_media_prefix %}css/forms.css" />
+<!--<link rel="stylesheet" type="text/css" href="../media/css/codemirror.css" />-->
+{% endblock %}
+{% block extrahead %}
+<script type="text/javascript" src="../media/scripts/jquery-1.8.2.min.js"></script>
+<!--<script type="text/javascript" src="../media/scripts/codemirror.js"></script>-->
+<!--<script src="../media/scripts/modes/javascript.js"></script>-->
+<!--<script src="../media/scripts/modes/css.js"></script>-->
+<!--<script src="../media/scripts/modes/htmlembedded.js"></script>-->
+<script type="text/javascript">
+    function _load(file_id){
+        var _path = $('#'+file_id).val();
+        if(!_path==''){
+            $.post('/file-content/',{'_path':_path,'csrfmiddlewaretoken':$('[name="csrfmiddlewaretoken"]').val()},function(data){
+                if(data==='False'){
+                    $('#error_msg').text('File Path does not exist :(, Please check the path or try another file!!');
+                    $('#error_msg').css("display", "block");
+                }
+                else{
+                    $('#error_msg').css("display", "none");
+                    $('#id_file_content').attr('value',data.split('DT-CONTENT')[0]);
+                    $('#id_token').attr('value',data.split('DT-CONTENT')[1]);
+//                    var myCodeMirror = CodeMirror(function(elt) {
+//                        $('#id_file_content')[0].parentNode.replaceChild(elt, $('#id_file_content')[0]);
+//                    }, {value: $('#id_file_content')[0].value});
+                }
+            });
+        }
+        else{
+            alert('please specify the file path !!!');
+        }
+    }
+    function _save(){
+        var _val = $('#id_file_content').val();
+        var _path = $('#id_name').val();
+        if(!_path==''&&!_val==''){
+        $.post('/file-content/',{'_content':_val,'csrfmiddlewaretoken':$('[name="csrfmiddlewaretoken"]').val(),'_path':_path,'_token':$('#id_token').val()},function(data){
+            if(data==='False'){
+                $('#error_msg').text('Some Technical issue found, please check your logs');
+                $('#error_msg').css("display", "block");
+            }
+            else if(data==='Path error'){
+                $('#error_msg').text('File Path does not exist :(, Please check or try another file!!');
+                $('#error_msg').css("display", "block");
+            }
+            else{
+                $('#error_msg').css("display", "none");
+                $('#id_file_content').attr('value',data);
+            }
+        });
+        }
+        else{
+            alert('please specify the file path !!! or load the content');
+        }
+    }
+    function _location(){
+        window.location =  '/admin/live_edit/records/'
+    }
+</script>
+
+{% endblock extrahead %}
+
+{% block coltype %}colMS{% endblock %}
+
+{% block bodyclass %}dashboard{% endblock %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block content %}
+<div id="content-main" style="margin: 50px 200px;width: 850px">
+    <h2 style="margin-top: -35px;margin-left:250px;">Content Control Management</h2>
+        <div>
+            <fieldset class="module aligned">{% csrf_token %}
+                <div class="form-row name">
+                    <div>
+                        <label for="id_name">File Name:</label>
+                        <input type="text" maxlength="80" name="file_name" class="vTextField" id="id_name">
+                        <input type="hidden" maxlength="80" name="token" class="vTextField" id="id_token">
+                        <input type="button" value="Load Content"  name="_save" style="float:none;height:23px;margin-left:10px;padding-top:0;" onclick="_load('id_name');">
+                        <label id="error_msg" style="display: none;color: #ff0000;float: right;margin-right:255px;width:455px"></label>
+                    </div>
+                </div>
+                <div class="form-row file-content">
+                    <div>
+                        <label for="id_file_content">File Content:</label>
+                        <textarea class="vLargeTextField" name="question" cols="40" rows="10" id="id_file_content" style="width: 80%;"></textarea>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <input type="button" name="_save_content" value="Save Content" style="margin-left:45%;height:30px;padding-top:0;width:100px;" onclick="_save()">
+                </div>
+            </fieldset>
+            <div class="submit-row">
+                <input type="submit" name="_check" class="default" value="Check Records" onclick="_location()">
+            </div>
+        </div>
+
+</div>
+{% endblock content %}
